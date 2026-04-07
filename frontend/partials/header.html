@@ -1,0 +1,58 @@
+<!-- ================================================================
+     HEADER
+     ================================================================ -->
+<header>
+  <div class="hd">
+    <div class="logo" onclick="goHome()">Truyện<span>Hay</span></div>
+    <nav>
+      <button type="button" class="nav-home-btn" onclick="goHome()">Trang Chủ</button>
+      <div class="nav-cat">
+        <button type="button" class="nav-cat-btn">Thể Loại ▾</button>
+        <div class="nav-cat-dd">
+          <button onclick="showCat('Tiên Hiệp')">Tiên Hiệp</button>
+          <button onclick="showCat('Kiếm Hiệp')">Kiếm Hiệp</button>
+          <button onclick="showCat('Ngôn Tình')">Ngôn Tình</button>
+          <button onclick="showCat('Trinh Thám')">Trinh Thám</button>
+          <button onclick="showCat('Dị Năng')">Dị Năng</button>
+          <button onclick="showCat('Huyền Huyễn')">Huyền Huyễn</button>
+          <button onclick="showCat('Đô Thị')">Đô Thị</button>
+          <button onclick="showCat('Lịch Sử')">Lịch Sử</button>
+          <button onclick="showCat('Khoa Huyễn')">Khoa Huyễn</button>
+          <button onclick="showCat('Xuyên Không')">Xuyên Không</button>
+          <button onclick="showCat('Hệ Thống')">Hệ Thống</button>
+        </div>
+      </div>
+    </nav>
+    <div class="search-bar">
+      <span class="c-txt3">🔍</span>
+      <input type="text" placeholder="Tìm kiếm truyện..." id="search-input" oninput="doSearch()">
+    </div>
+    <div class="theme-wrap">
+      <button type="button" class="btn-theme" id="btn-theme" onclick="toggleTheme()" aria-label="Đổi giao diện" title="Đổi giao diện">🌙</button>
+    </div>
+    <div class="auth-btns" id="auth-guest">
+      <button class="btn-hlogin" onclick="openModal('login')">Đăng Nhập</button>
+      <button class="btn-hreg" onclick="openModal('register')">Đăng Ký</button>
+    </div>
+    <div class="user-menu is-hidden" id="auth-user" onclick="toggleDD()">
+      <div class="user-av" id="hd-av">A</div>
+      <span class="user-nm" id="hd-nm">User</span>
+      <span class="c-txt3--caret">▾</span>
+      <div class="user-dd" id="user-dd">
+        <div class="dd-hd">
+          <div class="dd-uname" id="dd-nm"></div>
+          <div class="dd-email" id="dd-em"></div>
+          <div class="dd-role" id="dd-role"></div>
+        </div>
+        <button class="dd-item" onclick="goProfile();closeDD()">👤 Trang Cá Nhân</button>
+        <button class="dd-item" onclick="goProfileTab('history');closeDD()">🕐 Lịch sử đọc</button>
+        <button class="dd-item" onclick="closeDD();goProfileTab('follows')">🔔 Theo dõi</button>
+        <div class="dd-div"></div>
+        <!-- Nút Quản trị: chỉ hiện với ADMIN -->
+        <button class="dd-item dd-admin is-hidden" id="dd-admin-btn" onclick="closeDD();goAdminPanel()">🛡️ Quản Trị</button>
+        <button class="dd-item" onclick="goProfileTab('settings');closeDD()">⚙️ Cài Đặt</button>
+        <button class="dd-item danger" onclick="doLogout()">🚪 Đăng Xuất</button>
+      </div>
+    </div>
+  </div>
+</header>

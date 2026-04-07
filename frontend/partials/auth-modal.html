@@ -1,0 +1,125 @@
+<!-- ================================================================
+     AUTH MODAL
+     ================================================================ -->
+<div class="modal-ov" id="auth-modal" onclick="ovClick(event)">
+  <div class="modal">
+    <button class="modal-x" onclick="closeModal()">✕</button>
+    <div class="modal-logo">Truyện<span>Hay</span></div>
+    <div class="modal-sub" id="modal-sub">Chào mừng trở lại!</div>
+    <div class="modal-tabs">
+      <button class="mtab active" id="mtab-login" onclick="switchTab('login')">Đăng Nhập</button>
+      <button class="mtab" id="mtab-register" onclick="switchTab('register')">Đăng Ký</button>
+    </div>
+    <div class="alert-bx" id="alert-bx"></div>
+
+    <!-- Login form -->
+    <div id="frm-login">
+      <div class="fg">
+        <label class="fl">Email hoặc Tên đăng nhập</label>
+        <input class="fi" type="text" id="l-id" placeholder="email@example.com">
+        <div class="ferr" id="e-lid">Vui lòng nhập email hoặc tên đăng nhập</div>
+      </div>
+      <div class="fg">
+        <label class="fl">Mật khẩu</label>
+        <div class="inp-wr">
+          <input class="fi" type="password" id="l-pw" placeholder="••••••••">
+          <button class="inp-eye" onclick="toggleEye('l-pw',this)" tabindex="-1">👁</button>
+        </div>
+        <div class="ferr" id="e-lpw">Vui lòng nhập mật khẩu</div>
+        <button class="forgot-lnk" onclick="showForgot()">Quên mật khẩu?</button>
+      </div>
+      <div class="cb-row">
+        <input type="checkbox" id="remember">
+        <label for="remember">Ghi nhớ đăng nhập 30 ngày</label>
+      </div>
+      <button class="btn-p btn-full" onclick="doLogin()">Đăng Nhập</button>
+      <div class="div-or">hoặc</div>
+      <div class="social-btns">
+        <button class="social-btn" onclick="socialMsg('Google')">🌐 Google</button>
+        <button class="social-btn" onclick="socialMsg('Facebook')">📘 Facebook</button>
+      </div>
+      <div class="sw-mode">Chưa có tài khoản? <button onclick="switchTab('register')">Đăng ký ngay</button></div>
+    </div>
+
+    <!-- Register form -->
+    <div id="frm-register" class="is-hidden">
+      <div class="fg">
+        <label class="fl">Tên đăng nhập</label>
+        <input class="fi" type="text" id="r-un" placeholder="ten_dang_nhap">
+        <div class="ferr" id="e-run">Tối thiểu 3 ký tự</div>
+      </div>
+      <div class="fg">
+        <label class="fl">Email</label>
+        <input class="fi" type="email" id="r-em" placeholder="email@example.com">
+        <div class="ferr" id="e-rem">Email không hợp lệ</div>
+      </div>
+      <div class="fg">
+        <label class="fl">Mật khẩu</label>
+        <div class="inp-wr">
+          <input class="fi" type="password" id="r-pw" placeholder="Tối thiểu 8 ký tự" oninput="pwStrength()">
+          <button class="inp-eye" onclick="toggleEye('r-pw',this)" tabindex="-1">👁</button>
+        </div>
+        <div class="ferr" id="e-rpw">Tối thiểu 8 ký tự</div>
+        <div class="pw-str" id="pw-str"></div>
+      </div>
+      <div class="fg">
+        <label class="fl">Xác nhận mật khẩu</label>
+        <div class="inp-wr">
+          <input class="fi" type="password" id="r-cf" placeholder="Nhập lại mật khẩu">
+          <button class="inp-eye" onclick="toggleEye('r-cf',this)" tabindex="-1">👁</button>
+        </div>
+        <div class="ferr" id="e-rcf">Mật khẩu không khớp</div>
+      </div>
+      <div class="cb-row">
+        <input type="checkbox" id="agree">
+        <label for="agree">Tôi đồng ý với <a href="#" onclick="return false">Điều khoản</a> và <a href="#" onclick="return false">Chính sách</a> của TruyệnHay</label>
+      </div>
+      <div class="ferr" id="e-agree">Bạn phải đồng ý với điều khoản</div>
+      <button class="btn-p btn-full" onclick="doRegister()">Đăng ký</button>
+      <div class="div-or">hoặc</div>
+      <div class="social-btns">
+        <button class="social-btn" onclick="socialMsg('Google')">🌐 Google</button>
+        <button class="social-btn" onclick="socialMsg('Facebook')">📘 Facebook</button>
+      </div>
+      <div class="sw-mode">Đã có tài khoản? <button onclick="switchTab('login')">Đăng nhập</button></div>
+    </div>
+
+    <!-- Verify OTP form -->
+    <div id="frm-verify" class="is-hidden">
+      <div class="forgot-head">
+        <div class="forgot-icon">✉️</div>
+        <div class="forgot-sub">Vui lòng nhập mã OTP gồm 6 chữ số đã được gửi đến email <br><b id="v-email-disp" class="c-gold"></b></div>
+      </div>
+      <div class="fg">
+        <label class="fl">Mã Xác Thực (OTP)</label>
+        <input class="fi" type="text" id="v-otp" placeholder="Ví dụ: 123456" maxlength="6" style="text-align:center;font-size:1.5rem;letter-spacing:0.5rem;">
+        <div class="ferr" id="e-votp">Vui lòng nhập đủ 6 số</div>
+      </div>
+      <button class="btn-p btn-full" onclick="doVerifyOTP()">Xác Nhận Đăng Ký</button>
+      <div class="sw-mode sw-mode--forgot">
+        <button id="btn-resend-otp" onclick="doResendOTP()" class="c-txt3">Gửi lại mã OTP</button>
+      </div>
+      <div class="sw-mode" id="otp-expire-note"></div>
+      <div class="sw-mode sw-mode--forgot">
+        <button onclick="switchTab('login')" class="c-txt3">← Quay lại đăng nhập</button>
+      </div>
+    </div>
+
+    <!-- Forgot password form -->
+    <div id="frm-forgot" class="is-hidden">
+      <div class="forgot-head">
+        <div class="forgot-icon">🔑</div>
+        <div class="forgot-sub">Nhập email để nhận link đặt lại mật khẩu</div>
+      </div>
+      <div class="fg">
+        <label class="fl">Email đăng ký</label>
+        <input class="fi" type="email" id="fg-em" placeholder="email@example.com">
+        <div class="ferr" id="e-fg">Email không hợp lệ</div>
+      </div>
+      <button class="btn-p btn-full" onclick="doForgot()">Gửi Link Đặt Lại</button>
+      <div class="sw-mode sw-mode--forgot">
+        <button onclick="switchTab('login')" class="c-txt3">← Quay lại đăng nhập</button>
+      </div>
+    </div>
+  </div>
+</div>

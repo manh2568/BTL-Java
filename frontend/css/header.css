@@ -1,0 +1,67 @@
+/* HEADER + AUTH HEADER */
+header{position:sticky;top:0;z-index:100;background:rgba(var(--bg-rgb),.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--bdr);padding:0 2rem}
+.hd{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:1.25rem;height:64px}
+.logo{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--gold);cursor:pointer;flex-shrink:0}
+.logo span{color:var(--txt2);font-weight:400;font-style:italic}
+nav{display:flex;gap:.2rem;flex:1}
+.nav-home-btn{background:none;border:none;cursor:pointer;font-family:inherit;font-size:.9rem;color:var(--txt2);padding:.45rem .75rem;border-radius:8px;transition:all .2s;white-space:nowrap}
+.nav-home-btn:hover{color:var(--gold);background:rgba(201,168,76,.08)}
+.nav-cat{position:relative;padding-bottom:8px;margin-bottom:-8px}
+.nav-cat-btn{background:none;border:none;cursor:pointer;font-family:inherit;font-size:.9rem;color:var(--txt2);padding:.45rem .75rem;border-radius:8px;transition:all .2s;white-space:nowrap}
+.nav-cat:hover .nav-cat-btn{color:var(--gold);background:rgba(201,168,76,.08)}
+.nav-cat-dd{display:none;position:absolute;top:calc(100% + 2px);left:0;min-width:170px;background:var(--sf);border:1px solid var(--bdr2);border-radius:10px;padding:.35rem;box-shadow:0 12px 35px rgba(0,0,0,.35);z-index:260}
+.nav-cat:hover .nav-cat-dd,.nav-cat:focus-within .nav-cat-dd{display:block}
+.nav-cat-dd button{width:100%;text-align:left;background:none;border:none;cursor:pointer;font-family:inherit;font-size:.88rem;color:var(--txt2);padding:.5rem .6rem;border-radius:7px;transition:all .15s}
+.nav-cat-dd button:hover{color:var(--gold);background:rgba(201,168,76,.1)}
+.search-bar{display:flex;align-items:center;gap:.5rem;background:var(--sf);border:1px solid var(--bdr);border-radius:8px;padding:.4rem .75rem;min-width:190px}
+.search-bar input{background:none;border:none;outline:none;font-family:inherit;font-size:.875rem;color:var(--txt);width:100%}
+.search-bar input::placeholder{color:var(--txt3)}
+
+.auth-btns{display:flex;gap:.5rem;align-items:center;flex-shrink:0}
+.btn-hlogin{background:none;border:1px solid var(--bdr2);border-radius:7px;padding:.4rem .9rem;color:var(--gold);font-family:inherit;font-size:.85rem;cursor:pointer;transition:all .2s}
+.btn-hlogin:hover{background:rgba(201,168,76,.08)}
+.btn-hreg{background:var(--gold);border:none;border-radius:7px;padding:.4rem .9rem;color:var(--bg2);font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-hreg:hover{background:var(--gold2)}
+.user-menu{display:flex;align-items:center;gap:.5rem;cursor:pointer;position:relative;flex-shrink:0}
+.user-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--goldd),var(--gold));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;color:var(--bg2);flex-shrink:0}
+.user-nm{font-size:.875rem;color:var(--txt2);max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.user-dd{position:absolute;top:calc(100% + 10px);right:0;background:var(--sf);border:1px solid var(--bdr2);border-radius:12px;min-width:200px;box-shadow:0 12px 40px rgba(0,0,0,.5);z-index:300;overflow:hidden;display:none}
+.user-dd.open{display:block;animation:fadeUp .2s ease}
+.dd-hd{padding:1rem 1.25rem;border-bottom:1px solid var(--bdr)}
+.dd-uname{font-weight:600;color:var(--txt);font-size:.9rem}
+.dd-email{font-size:.75rem;color:var(--txt3);margin-top:.15rem}
+.dd-item{display:flex;align-items:center;gap:.75rem;padding:.7rem 1.25rem;font-size:.875rem;color:var(--txt2);cursor:pointer;transition:background .15s;border:none;background:none;width:100%;font-family:inherit;text-align:left}
+.dd-item:hover{background:var(--sf2);color:var(--txt)}
+.dd-item.danger{color:var(--red)}
+.dd-item.danger:hover{background:rgba(196,75,58,.1)}
+.dd-item.dd-admin{color:#c9a84c;font-weight:600}
+.dd-item.dd-admin:hover{background:rgba(201,168,76,.1);color:var(--gold)}
+.dd-div{height:1px;background:var(--bdr);margin:.25rem 0}
+/* Role badge trong dropdown header */
+.dd-role{font-size:.7rem;margin-top:.25rem;padding:.2rem .5rem;border-radius:20px;display:inline-block;font-weight:600;letter-spacing:.03em}
+.dd-role--admin{background:rgba(201,168,76,.15);color:#c9a84c;border:1px solid rgba(201,168,76,.3)}
+.dd-role--author{background:rgba(74,144,104,.15);color:#4a9068;border:1px solid rgba(74,144,104,.3)}
+.dd-role--user{background:rgba(255,255,255,.06);color:var(--txt3);border:1px solid var(--bdr)}
+
+/* Theme picker */
+.theme-wrap{position:relative;flex-shrink:0}
+.btn-theme{width:40px;height:40px;border-radius:10px;border:1px solid var(--bdr2);background:var(--sf);cursor:pointer;font-size:1.15rem;line-height:1;display:flex;align-items:center;justify-content:center;transition:background .2s,border-color .2s}
+.btn-theme:hover{background:var(--sf2);border-color:var(--goldd)}
+.theme-dd{position:absolute;top:calc(100% + 8px);right:0;background:var(--sf);border:1px solid var(--bdr2);border-radius:12px;padding:.75rem .85rem;min-width:240px;box-shadow:0 12px 40px rgba(0,0,0,.45);z-index:280;display:none}
+.theme-dd.open{display:block;animation:fadeUp .2s ease}
+.theme-dd-title{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--txt3);margin-bottom:.45rem}
+.theme-dd-title--2{margin-top:.85rem;padding-top:.65rem;border-top:1px solid var(--bdr)}
+.theme-dd-row{display:flex;flex-wrap:wrap;gap:.35rem}
+.theme-chip{font-size:.78rem;padding:.38rem .55rem;border-radius:8px;border:1px solid var(--bdr);background:var(--bg2);color:var(--txt2);cursor:pointer;font-family:inherit;transition:all .15s}
+.theme-chip:hover{border-color:var(--bdr2);color:var(--txt)}
+.theme-chip.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,.08)}
+.theme-dd-row--accent{gap:.5rem;justify-content:space-between}
+.theme-swatch{width:36px;height:36px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:transform .15s,border-color .15s;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.theme-swatch:hover{transform:scale(1.06)}
+.theme-swatch.active{border-color:var(--txt);box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--gold)}
+.theme-swatch--gold{background:linear-gradient(135deg,#7a6330,#c9a84c)}
+.theme-swatch--ocean{background:linear-gradient(135deg,#2d6a80,#4a9ebc)}
+.theme-swatch--rose{background:linear-gradient(135deg,#8b4a5c,#c97a8c)}
+.theme-swatch--forest{background:linear-gradient(135deg,#2d5a3d,#4a9068)}
+
+

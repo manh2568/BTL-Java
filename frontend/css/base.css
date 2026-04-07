@@ -1,0 +1,100 @@
+﻿/* Base: CSS variables, reset, global body */
+:root {
+  --bg: #0d0b08;
+  --bg-rgb: 13, 11, 8;
+  --bg2: #161210;
+  --bg3: #1e1a16;
+  --sf: #241f19;
+  --sf2: #2e2820;
+  --gold: #c9a84c;
+  --gold2: #e8c97a;
+  --goldd: #7a6330;
+  --txt: #f0e8d8;
+  --txt2: #b8a888;
+  --txt3: #7a6e5c;
+  --red: #c44b3a;
+  --green: #4a9068;
+  --bdr: rgba(201, 168, 76, .15);
+  --bdr2: rgba(201, 168, 76, .25);
+}
+
+:root[data-theme="light"] {
+  --bg: #f4ecdf;
+  --bg-rgb: 244, 236, 223;
+  --bg2: #ebd8bd;
+  --bg3: #e0c8a8;
+  --sf: #dfccab;
+  --sf2: #c4ae8f;
+  --gold: #b37700;
+  --gold2: #e09900;
+  --goldd: #805500;
+  --txt: #2c251d;
+  --txt2: #524738;
+  --txt3: #756a5c;
+  --red: #d13030;
+  --green: #2b8451;
+  --bdr: rgba(100, 60, 0, .15);
+  --bdr2: rgba(100, 60, 0, .25);
+}
+
+/* Màu nhấn (accent) — tối */
+:root[data-accent="ocean"] {
+  --gold: #5cb3d4;
+  --gold2: #8ad0e8;
+  --goldd: #3d7a94;
+  --bdr: rgba(92, 179, 212, .18);
+  --bdr2: rgba(92, 179, 212, .32);
+}
+:root[data-accent="rose"] {
+  --gold: #d4a0a8;
+  --gold2: #e8bcc4;
+  --goldd: #9a636e;
+  --bdr: rgba(212, 160, 168, .2);
+  --bdr2: rgba(212, 160, 168, .35);
+}
+:root[data-accent="forest"] {
+  --gold: #6eb88a;
+  --gold2: #94d4aa;
+  --goldd: #3d7a55;
+  --bdr: rgba(110, 184, 138, .18);
+  --bdr2: rgba(110, 184, 138, .32);
+}
+
+/* Màu nhấn — sáng */
+:root[data-theme="light"][data-accent="ocean"] {
+  --gold: #1a6f8a;
+  --gold2: #2489a8;
+  --goldd: #0f4a5c;
+  --bdr: rgba(26, 111, 138, .18);
+  --bdr2: rgba(26, 111, 138, .28);
+}
+:root[data-theme="light"][data-accent="rose"] {
+  --gold: #a64d5d;
+  --gold2: #c46a7a;
+  --goldd: #6e3540;
+  --bdr: rgba(166, 77, 93, .18);
+  --bdr2: rgba(166, 77, 93, .28);
+}
+:root[data-theme="light"][data-accent="forest"] {
+  --gold: #2d7a4a;
+  --gold2: #3a9a5e;
+  --goldd: #1a5230;
+  --bdr: rgba(45, 122, 74, .18);
+  --bdr2: rgba(45, 122, 74, .28);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Source Serif 4', Georgia, serif;
+  background: var(--bg);
+  color: var(--txt);
+  min-height: 100vh;
+  line-height: 1.7;
+  transition: background 0.3s, color 0.3s;
+}
+

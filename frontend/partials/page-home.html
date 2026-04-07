@@ -1,0 +1,79 @@
+<!-- ================================================================
+     PAGE: HOME
+     ================================================================ -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-in">
+      <div class="hero-main">
+        <div class="hero-tag">Kho Truyện Online #1 Việt Nam</div>
+        <h1 id="hero-title">Đọc Truyện <em>Hay</em><br>Mọi Lúc Mọi Nơi</h1>
+        <p class="hero-desc" id="hero-desc">Khám phá hàng nghìn tác phẩm từ các tác giả tài năng. Từ tiên hiệp đến ngôn tình, tất cả chỉ trong một nơi.</p>
+        <div class="hero-meta">
+          <div><div class="hero-meta-num" id="hero-meta-genre">Tiên Hiệp</div><div class="hero-meta-label">Thể loại</div></div>
+          <div><div class="hero-meta-num" id="hero-meta-chapters">0</div><div class="hero-meta-label">Chương</div></div>
+          <div><div class="hero-meta-num" id="hero-meta-views">0</div><div class="hero-meta-label">Lượt xem</div></div>
+        </div>
+        <div class="hero-slider-ctrl">
+          <button class="hero-nav" onclick="prevHeroSlide()" aria-label="Truyện trước">‹</button>
+          <div class="hero-dots" id="hero-dots"></div>
+          <button class="hero-nav" onclick="nextHeroSlide()" aria-label="Truyện sau">›</button>
+        </div>
+        <div class="hero-actions">
+          <button class="btn-p" onclick="openFeaturedStory()">Đọc Nổi Bật</button>
+          <button class="btn-s" onclick="scrollToSection('cat-sec')">Duyệt Thể Loại</button>
+        </div>
+      </div>
+      <div class="bk-wrap">
+        <div class="book-cv" id="hero-book-cv" onclick="openFeaturedStory()">
+          <div class="book-ttl" id="book-cv-title">Truyện đã đăng</div>
+          <div class="book-dco"></div>
+          <div class="book-aut" id="book-cv-author">Đang cập nhật</div>
+          <div class="book-dco book-dco-dim"></div>
+          <div class="book-gnr" id="book-cv-meta">Đang cập nhật</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <div class="sec-in">
+      <div class="sec-hd">
+        <div class="sec-ttl">Mới Cập Nhật</div>
+        <button class="see-all" onclick="showAll('new')">Xem tất cả →</button>
+      </div>
+      <div class="grid" id="new-stories"></div>
+    </div>
+  </section>
+
+  <section id="cat-sec">
+    <div class="sec-in">
+      <div class="sec-hd"><div class="sec-ttl">Thể Loại</div></div>
+      <div class="cat-grid" id="home-genres">
+        <!-- JS render động -->
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-in">
+      <div class="two-col">
+        <div>
+          <div class="sec-hd"><div class="sec-ttl">Bảng Xếp Hạng</div></div>
+          <div class="rank-list" id="rank-list"></div>
+        </div>
+        <div>
+          <div class="sec-hd">
+            <div class="sec-ttl">Truyện Hot</div>
+            <button class="see-all" onclick="showAll('hot')">Xem tất cả →</button>
+          </div>
+          <div class="grid" id="hot-stories"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <strong>TruyệnHay</strong> - Kho truyện online lớn nhất Việt Nam<br>
+    <span class="footer-cpy">© 2026 TruyệnHay. Bảo lưu mọi quyền.</span>
+  </footer>
+</div>

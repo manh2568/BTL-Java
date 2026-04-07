@@ -1,0 +1,334 @@
+<!-- ================================================================
+     PAGE: PROFILE
+     ================================================================ -->
+<div id="page-profile" class="page prof-page">
+
+  <!-- Hidden file input for avatar upload -->
+  <input type="file" id="av-file-input" accept="image/*" onchange="handleAvatarUpload(event)">
+
+  <!-- Cover banner -->
+  <div class="prof-cover">
+    <div class="prof-cover-bg"></div>
+    <div class="prof-cover-pattern"></div>
+    <div class="prof-cover-glow"></div>
+    <div class="prof-cover-bottom"></div>
+    <div class="prof-cover-line"></div>
+    <button class="prof-back-btn" onclick="goHome()">← Trang Chủ</button>
+  </div>
+
+  <!-- Avatar + Identity -->
+  <div class="prof-av-zone">
+    <div class="prof-av-row">
+      <!-- Clickable avatar -->
+      <div class="av-wrapper" onclick="document.getElementById('av-file-input').click()" title="Đổi ảnh đại diện">
+        <div class="av-circle" id="prof-av-circle">
+          <span id="prof-av-initial">A</span>
+          <img id="prof-av-photo" class="av-photo is-hidden" src="" alt="">
+        </div>
+        <div class="av-overlay">
+          <span class="av-overlay-icon">📷</span>
+          <span class="av-overlay-text">Đổi ảnh</span>
+        </div>
+      </div>
+      <!-- Name & info -->
+      <div class="prof-id">
+        <div class="prof-name" id="prof-nm"></div>
+        <div class="prof-handle" id="prof-handle"></div>
+        <div class="prof-role-badge" id="prof-role-badge"></div>
+        <div class="prof-bio" id="prof-bio-disp"></div>
+        <div class="prof-joined">🗓 Thành viên từ tháng 3, 2025</div>
+      </div>
+      <!-- Action buttons -->
+      <div class="prof-actions">
+        <button class="prof-edit-btn" onclick="goProfileTab('settings')">✏️ Chỉnh sửa</button>
+        <button class="prof-logout-btn" onclick="doLogout()">🚪 Đăng xuất</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats bar -->
+  <div class="prof-stats-bar">
+    <div class="pstat-item" onclick="goProfileTab('follows')">
+      <div class="pstat-n2" id="ps-follow">0</div>
+      <div class="pstat-l2">Theo dõi</div>
+    </div>
+    <div class="pstat-item" onclick="goProfileTab('history')">
+      <div class="pstat-n2" id="ps-hist">0</div>
+      <div class="pstat-l2">Đang đọc</div>
+    </div>
+    <div class="pstat-item">
+      <div class="pstat-n2" id="ps-chapters">0</div>
+      <div class="pstat-l2">Chương đã đọc</div>
+    </div>
+    <div class="pstat-item">
+      <div class="pstat-n2">0</div>
+      <div class="pstat-l2">Bình luận</div>
+    </div>
+  </div>
+
+  <!-- Main layout: sidebar + content panels -->
+  <div class="prof-main">
+
+    <!-- Sidebar navigation -->
+    <div class="prof-sidebar">
+      <div class="snav-section">
+        <span class="snav-label">Hoạt động</span>
+        <button class="snav-btn" id="snav-follows" onclick="goProfileTab('follows')">
+          <span class="si">🔔</span> Theo Dõi <span class="sc" id="snav-follow-c">0</span>
+        </button>
+        <button class="snav-btn active" id="snav-history" onclick="goProfileTab('history')">
+          <span class="si">🕐</span> Lịch Sử <span class="sc" id="snav-hist-c">0</span>
+        </button>
+      </div>
+      <div class="snav-divider"></div>
+      <!-- Quản lý truyện: chỉ hiện với AUTHOR và ADMIN -->
+      <div class="snav-section is-hidden" id="snav-author-section">
+        <span class="snav-label">Tác giả</span>
+        <button class="snav-btn" id="snav-my-stories" onclick="goProfileTab('my-stories')">
+          <span class="si">📚</span> Truyện của tôi
+        </button>
+      </div>
+      <div class="snav-divider is-hidden" id="snav-author-div"></div>
+      <div class="snav-section">
+        <span class="snav-label">Tài khoản</span>
+        <button class="snav-btn" id="snav-settings" onclick="goProfileTab('settings')">
+          <span class="si">⚙️</span> Cài Đặt
+        </button>
+      </div>
+    </div>
+
+    <!-- Content panels -->
+    <div class="prof-content">
+
+      <!-- Follow tab -->
+      <div class="ptab-panel" id="ptc-follows">
+        <div class="panel-hd">
+          <div class="panel-title">🔔 Truyện Đang Theo Dõi</div>
+          <span class="panel-count" id="follow-count-badge">0 truyện</span>
+        </div>
+        <div id="follow-content"></div>
+      </div>
+
+      <!-- History tab -->
+      <div class="ptab-panel active" id="ptc-history">
+        <div class="panel-hd">
+          <div class="panel-title">🕐 Lịch Sử Đọc</div>
+          <span class="panel-count" id="hist-count-badge">0 truyện</span>
+        </div>
+        <div id="hist-content"></div>
+      </div>
+
+      <!-- My Stories tab (AUTHOR / ADMIN) -->
+      <div class="ptab-panel" id="ptc-my-stories">
+        <div class="panel-hd">
+          <div class="panel-title">📚 Truyện Của Tôi</div>
+          <button class="btn-author-new" onclick="toggleNewStoryForm()">✍️ Đăng Truyện Mới</button>
+        </div>
+
+        <!-- Form tạo truyện mới (ẩn mặc định) -->
+        <div class="author-new-form is-hidden" id="author-new-form">
+          <div class="settings-card">
+            <div class="sc-title"><span class="sc-title-ico">✨</span> Tạo Truyện Mới</div>
+            <div class="sg2">
+              <div class="fg-s"><label class="fl-s">Tên truyện *</label><input class="fi-s" id="ns-title" type="text" placeholder="Ví dụ: Phàm Nhân Tu Tiên"></div>
+              <div class="fg-s"><label class="fl-s">Tác giả</label><input class="fi-s" id="ns-author" type="text" placeholder="Tên bút danh của bạn"></div>
+            </div>
+            <div class="sg2">
+              <div class="fg-s"><label class="fl-s">Thể loại</label><input class="fi-s" id="ns-genre" type="text" placeholder="Tiên Hiệp, Huyền Huyễn, ..."></div>
+              <div class="fg-s"><label class="fl-s">Trạng thái</label>
+                <select class="fi-s" id="ns-status">
+                  <option value="Đang Ra">Đang Ra</option>
+                  <option value="Hoàn Thành">Hoàn Thành</option>
+                  <option value="Tạm Ngưng">Tạm Ngưng</option>
+                </select>
+              </div>
+            </div>
+            <div class="fg-s">
+              <label class="fl-s">Ảnh bìa</label>
+              <div style="display:flex;gap:10px;">
+                <input class="fi-s" id="ns-cover" type="text" placeholder="URL ảnh (https://...)" style="flex:1;">
+                <button class="btn-author-new" onclick="document.getElementById('ns-cover-file').click()">Tải ảnh lên</button>
+                <input type="file" id="ns-cover-file" style="display:none" accept="image/*" onchange="uploadCoverFile(this, 'ns-cover')">
+              </div>
+            </div>
+            <div class="fg-s"><label class="fl-s">Mô tả truyện</label><textarea class="fi-s" id="ns-desc" rows="4" placeholder="Tóm tắt nội dung truyện..."></textarea></div>
+            <div class="save-row">
+              <button class="btn-sv" onclick="submitNewStory()">📖 Đăng Truyện</button>
+              <button class="btn-cc" onclick="toggleNewStoryForm()">Hủy</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Danh sách truyện đã đăng -->
+        <div id="my-stories-list">
+          <div style="text-align:center;padding:2rem;color:var(--txt3)">Đang tải...</div>
+        </div>
+
+        <!-- Modal chỉnh sửa truyện -->
+        <div class="author-new-form is-hidden" id="author-edit-form">
+          <div class="settings-card">
+            <div class="sc-title"><span class="sc-title-ico">⚙️</span> Sửa Truyện — <span id="es-id" style="display:none"></span><span id="es-display-title"></span></div>
+            <div class="sg2">
+              <div class="fg-s"><label class="fl-s">Tên truyện *</label><input class="fi-s" id="es-title" type="text"></div>
+              <div class="fg-s"><label class="fl-s">Tác giả</label><input class="fi-s" id="es-author" type="text"></div>
+            </div>
+            <div class="sg2">
+              <div class="fg-s"><label class="fl-s">Thể loại</label><input class="fi-s" id="es-genre" type="text"></div>
+              <div class="fg-s"><label class="fl-s">Trạng thái</label>
+                <select class="fi-s" id="es-status">
+                  <option value="Đang Ra">Đang Ra</option>
+                  <option value="Hoàn Thành">Hoàn Thành</option>
+                  <option value="Tạm Ngưng">Tạm Ngưng</option>
+                </select>
+              </div>
+            </div>
+            <div class="fg-s">
+              <label class="fl-s">Ảnh bìa</label>
+              <div style="display:flex;gap:10px;">
+                <input class="fi-s" id="es-cover" type="text" placeholder="URL ảnh (https://...)" style="flex:1;">
+                <button class="btn-author-new" onclick="document.getElementById('es-cover-file').click()">Tải ảnh lên</button>
+                <input type="file" id="es-cover-file" style="display:none" accept="image/*" onchange="uploadCoverFile(this, 'es-cover')">
+              </div>
+            </div>
+            <div class="fg-s"><label class="fl-s">Mô tả truyện</label><textarea class="fi-s" id="es-desc" rows="4"></textarea></div>
+            <div class="save-row">
+              <button class="btn-sv" onclick="submitEditStory()">💾 Lưu Thay Đổi</button>
+              <button class="btn-cc" onclick="closeEditStoryForm()">Hủy</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal thêm chương (ẩn mặc định) -->
+        <div class="author-ch-modal is-hidden" id="add-chapter-modal">
+          <div class="settings-card">
+            <div class="sc-title"><span class="sc-title-ico">📝</span> Thêm Chương Mới — <span id="ach-story-name"></span></div>
+            <div class="sg2">
+              <div class="fg-s"><label class="fl-s">Số thứ tự chương *</label><input class="fi-s" id="ach-index" type="number" min="1" placeholder="1"></div>
+              <div class="fg-s"><label class="fl-s">Tiêu đề chương *</label><input class="fi-s" id="ach-title" type="text" placeholder="Chương 1: Khởi đầu"></div>
+            </div>
+            <div class="fg-s"><label class="fl-s">Nội dung chương *</label><textarea class="fi-s" id="ach-content" rows="12" placeholder="Nội dung chương truyện..."></textarea></div>
+            <div class="save-row">
+              <button class="btn-sv" onclick="submitNewChapter()">📤 Đăng Chương</button>
+              <button class="btn-cc" onclick="closeAddChapter()">Hủy</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal chỉnh sửa chương (ẩn mặc định) -->
+        <div class="author-ch-modal is-hidden" id="edit-chapter-modal">
+          <div class="settings-card">
+            <div class="sc-title"><span class="sc-title-ico">📝</span> Sửa Chương — <span id="ech-id" style="display:none"></span><span id="ech-story-name"></span></div>
+            <div class="sg2">
+              <div class="fg-s"><label class="fl-s">Số thứ tự chương *</label><input class="fi-s" id="ech-index" type="number" min="1"></div>
+              <div class="fg-s"><label class="fl-s">Tiêu đề chương *</label><input class="fi-s" id="ech-title" type="text" placeholder="Chương 1: Khởi đầu"></div>
+            </div>
+            <div class="fg-s"><label class="fl-s">Nội dung chương *</label><textarea class="fi-s" id="ech-content" rows="12" placeholder="Nội dung chương truyện..."></textarea></div>
+            <div class="save-row">
+              <button class="btn-sv" onclick="submitEditChapter()">💾 Lưu Thay Đổi</button>
+              <button class="btn-cc" onclick="closeEditChapter()">Hủy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings tab -->
+      <div class="ptab-panel" id="ptc-settings">
+        <div class="panel-hd"><div class="panel-title">⚙️ Cài Đặt Tài Khoản</div></div>
+
+        <!-- Avatar card -->
+        <div class="settings-card">
+          <div class="sc-title"><span class="sc-title-ico">🖼️</span> Ảnh đại diện</div>
+          <div class="av-setting-row">
+            <div class="av-setting-preview" id="s-av-preview">
+              <span id="s-av-initial">A</span>
+              <img id="s-av-photo" class="is-hidden" src="" alt="">
+            </div>
+            <div class="av-setting-info">
+              <div class="av-setting-title">Ảnh đại diện</div>
+              <div class="av-setting-sub">Tải lên ảnh JPG, PNG tối đa 2MB. Hoặc chọn avatar bên dưới.</div>
+              <div class="av-setting-btns">
+                <button class="av-upload-btn" onclick="document.getElementById('av-file-input').click()">📷 Tải ảnh lên</button>
+                <button class="av-reset-btn" onclick="resetAvatar()">↺ Đặt lại</button>
+              </div>
+            </div>
+          </div>
+          <div class="av-presets">
+            <div class="av-preset-label">Chọn avatar nhanh:</div>
+            <div class="av-preset" onclick="setEmojiAvatar('🐉')" title="Rồng">🐉</div>
+            <div class="av-preset" onclick="setEmojiAvatar('⚔️')" title="Kiếm">⚔️</div>
+            <div class="av-preset" onclick="setEmojiAvatar('📚')" title="Sách">📚</div>
+            <div class="av-preset" onclick="setEmojiAvatar('🌙')" title="Trăng">🌙</div>
+            <div class="av-preset" onclick="setEmojiAvatar('⚡')" title="Sét">⚡</div>
+            <div class="av-preset" onclick="setEmojiAvatar('🌸')" title="Hoa">🌸</div>
+            <div class="av-preset" onclick="setEmojiAvatar('🦊')" title="Cáo">🦊</div>
+            <div class="av-preset" onclick="setEmojiAvatar('🏯')" title="Lâu đài">🏯</div>
+            <div class="av-preset" onclick="setEmojiAvatar('🎭')" title="Mặt nạ">🎭</div>
+            <div class="av-preset" onclick="setEmojiAvatar('💫')" title="Sao">💫</div>
+          </div>
+        </div>
+
+        <!-- Profile info card -->
+        <div class="settings-card">
+          <div class="sc-title"><span class="sc-title-ico">👤</span> Thông tin cá nhân</div>
+          <div class="sg2">
+            <div class="fg-s"><label class="fl-s">Tên hiển thị</label><input class="fi-s" id="s-fn" type="text" placeholder="Tên của bạn"></div>
+            <div class="fg-s"><label class="fl-s">Tên đăng nhập</label><input class="fi-s" id="s-un" type="text" placeholder="ten_dang_nhap"></div>
+          </div>
+          <div class="fg-s"><label class="fl-s">Email</label><input class="fi-s" id="s-em" type="email" disabled></div>
+          <div class="fg-s">
+            <label class="fl-s">Giới thiệu bản thân</label>
+            <textarea class="fi-s" id="s-bio" rows="3" placeholder="Viết vài dòng về sở thích đọc truyện của bạn..."></textarea>
+          </div>
+          <div class="save-row">
+            <button class="btn-sv" onclick="saveSettings()">💾 Lưu thay đổi</button>
+            <button class="btn-cc" onclick="goProfileTab('history')">Hủy</button>
+          </div>
+        </div>
+
+        <!-- Password card -->
+        <div class="settings-card">
+          <div class="sc-title"><span class="sc-title-ico">🔒</span> Đổi mật khẩu</div>
+          <div class="fg-s">
+            <label class="fl-s">Mật khẩu hiện tại</label>
+            <div class="inp-wr">
+              <input class="fi-s" type="password" id="s-op" placeholder="••••••••">
+              <button class="inp-eye" onclick="toggleEye('s-op',this)" tabindex="-1">👁</button>
+            </div>
+          </div>
+          <div class="sg2">
+            <div class="fg-s">
+              <label class="fl-s">Mật khẩu mới</label>
+              <div class="inp-wr">
+                <input class="fi-s" type="password" id="s-np" placeholder="Tối thiểu 8 ký tự">
+                <button class="inp-eye" onclick="toggleEye('s-np',this)" tabindex="-1">👁</button>
+              </div>
+            </div>
+            <div class="fg-s">
+              <label class="fl-s">Xác nhận mật khẩu mới</label>
+              <div class="inp-wr">
+                <input class="fi-s" type="password" id="s-cp" placeholder="Nhập lại mật khẩu">
+                <button class="inp-eye" onclick="toggleEye('s-cp',this)" tabindex="-1">👁</button>
+              </div>
+            </div>
+          </div>
+          <div class="save-row">
+            <button class="btn-sv" onclick="savePassword()">🔑 Đổi mật khẩu</button>
+          </div>
+        </div>
+
+        <!-- Danger zone -->
+        <div class="danger-zone">
+          <div class="dz-info">
+            <strong>Đăng xuất khỏi tài khoản</strong>
+            <span>Bạn có thể đăng nhập lại bất cứ lúc nào</span>
+          </div>
+          <button class="btn-dz" onclick="doLogout()">🚪 Đăng Xuất</button>
+        </div>
+
+      </div><!-- /ptc-settings -->
+    </div><!-- /prof-content -->
+  </div><!-- /prof-main -->
+
+  <footer><strong>TruyệnHay</strong> — © 2025</footer>
+</div>
+

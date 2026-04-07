@@ -1,0 +1,53 @@
+<!-- ================================================================
+     PAGE: READ (chapter content + comments)
+     ================================================================ -->
+<div id="page-read" class="page">
+  <!-- Top bar -->
+  <div class="read-hd">
+    <div class="read-hd-in">
+      <button class="back-btn" onclick="goDetail()">← Mục Lục</button>
+      <div class="read-bread" id="read-bread"></div>
+    </div>
+  </div>
+
+  <!-- Chapter navigation -->
+  <div class="ch-nav">
+    <button class="nav-btn" id="btn-prev" onclick="prevCh()">‹ Chương Trước</button>
+    <select class="ch-sel" id="ch-sel" onchange="readChapter(parseInt(this.value))"></select>
+    <button class="nav-btn" id="btn-next" onclick="nextCh()">Chương Sau ›</button>
+  </div>
+
+  <!-- Chapter content -->
+  <div class="read-body">
+    <div class="ch-main-t" id="ch-title"></div>
+    <div class="ch-story-n" id="ch-story-n"></div>
+    <div class="ch-divider"><span class="c-goldd">✦</span></div>
+    <div class="ch-text" id="ch-text"></div>
+  </div>
+
+  <!-- Bottom navigation -->
+  <div class="ch-nav ch-nav--bottom">
+    <button class="nav-btn" id="btn-prev2" onclick="prevCh()">‹ Chương Trước</button>
+    <button class="btn-p btn-p--compact" onclick="goDetail()">📚 Mục Lục</button>
+    <button class="nav-btn" id="btn-next2" onclick="nextCh()">Chương Sau ›</button>
+  </div>
+
+  <!-- Comment section -->
+  <div class="cmt-section">
+    <div class="cmt-section-hd">
+      <div class="cmt-title">Bình Luận</div>
+      <div class="cmt-hd-actions">
+        <span class="cmt-total" id="cmt-total">0 bình luận</span>
+        <div class="cmt-sort">
+          <button class="cmt-sort-btn active" id="sort-new" onclick="setSortMode('new')">Mới nhất</button>
+          <button class="cmt-sort-btn" id="sort-top" onclick="setSortMode('top')">Hay nhất</button>
+        </div>
+      </div>
+    </div>
+    <div id="cmt-write-area"></div>
+    <div class="cmt-list" id="cmt-list"></div>
+  </div>
+
+  <footer><strong>TruyệnHay</strong> — © 2025</footer>
+</div>
+

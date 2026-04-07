@@ -1,0 +1,167 @@
+<!-- ================================================================
+     PAGE: ADMIN PANEL
+     Chỉ hiển thị khi user.role === 'ADMIN'
+     ================================================================ -->
+<div id="page-admin" class="page admin-page">
+
+  <!-- Header -->
+  <div class="admin-hd">
+    <div class="admin-hd-left">
+      <button class="admin-back-btn" onclick="goHome()">← Trang chủ</button>
+      <div class="admin-hd-title">
+        🛡️ Quản Trị Viên
+        <span class="admin-badge">ADMIN</span>
+      </div>
+    </div>
+    <div style="font-size:.82rem;color:var(--txt3)" id="admin-hd-user"></div>
+  </div>
+
+  <!-- Layout -->
+  <div class="admin-layout">
+
+    <!-- Sidebar -->
+    <div class="admin-sidebar">
+      <div class="admin-nav-label">Quản lý</div>
+      <button class="admin-nav-btn active" id="anav-dashboard" onclick="switchAdminTab('dashboard')">
+        <span class="nav-ico">📊</span> Tổng quan
+      </button>
+      <button class="admin-nav-btn" id="anav-users" onclick="switchAdminTab('users')">
+        <span class="nav-ico">👥</span> Người dùng
+        <span class="admin-nav-count" id="anav-users-count">-</span>
+      </button>
+      <button class="admin-nav-btn" id="anav-stories" onclick="switchAdminTab('stories')">
+        <span class="nav-ico">📚</span> Truyện
+        <span class="admin-nav-count" id="anav-stories-count">-</span>
+      </button>
+      <button class="admin-nav-btn" id="anav-comments" onclick="switchAdminTab('comments')">
+        <span class="nav-ico">💬</span> Bình luận
+        <span class="admin-nav-count" id="anav-comments-count">-</span>
+      </button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="admin-content">
+
+      <!-- ─── TAB: DASHBOARD ─── -->
+      <div id="admin-tab-dashboard" class="admin-tab active">
+        <div class="admin-stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-num" id="stat-total-users">–</div>
+            <div class="stat-label">Người dùng</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">📚</div>
+            <div class="stat-num" id="stat-total-stories">–</div>
+            <div class="stat-label">Truyện</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">📖</div>
+            <div class="stat-num" id="stat-total-chapters">–</div>
+            <div class="stat-label">Chương</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">💬</div>
+            <div class="stat-num" id="stat-total-comments">–</div>
+            <div class="stat-label">Bình luận</div>
+          </div>
+        </div>
+
+        <!-- Quick actions -->
+        <div class="admin-panel">
+          <div class="admin-panel-hd">
+            <div class="admin-panel-title">⚡ Thao tác nhanh</div>
+          </div>
+          <div style="padding:1.5rem;display:flex;gap:.75rem;flex-wrap:wrap">
+            <button class="btn-admin-action" onclick="switchAdminTab('users')">👥 Quản lý người dùng</button>
+            <button class="btn-admin-action" onclick="switchAdminTab('stories')">📚 Quản lý truyện</button>
+            <button class="btn-admin-action" onclick="switchAdminTab('comments')">💬 Kiểm duyệt bình luận</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── TAB: USERS ─── -->
+      <div id="admin-tab-users" class="admin-tab">
+        <div class="admin-panel">
+          <div class="admin-panel-hd">
+            <div>
+              <div class="admin-panel-title">👥 Danh sách người dùng</div>
+              <div class="admin-panel-sub" id="admin-users-sub">Đang tải...</div>
+            </div>
+          </div>
+          <div class="admin-search-row">
+            <input class="admin-search" type="text" placeholder="🔍 Tìm theo username hoặc email..."
+                   id="admin-user-search" oninput="filterAdminUsers()">
+          </div>
+          <div class="admin-table-wrap">
+            <table class="admin-table" id="admin-users-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Username</th>
+                  <th>Email</th>
+                  <th>Tên hiển thị</th>
+                  <th>Role hiện tại</th>
+                  <th>Đổi Role</th>
+                </tr>
+              </thead>
+              <tbody id="admin-users-body">
+                <tr><td colspan="6" class="admin-loading">⏳ Đang tải dữ liệu...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── TAB: STORIES ─── -->
+      <div id="admin-tab-stories" class="admin-tab">
+        <div class="admin-panel">
+          <div class="admin-panel-hd">
+            <div>
+              <div class="admin-panel-title">📚 Danh sách truyện</div>
+              <div class="admin-panel-sub" id="admin-stories-sub">Đang tải...</div>
+            </div>
+          </div>
+          <div class="admin-search-row">
+            <input class="admin-search" type="text" placeholder="🔍 Tìm theo tên truyện hoặc tác giả..."
+                   id="admin-story-search" oninput="filterAdminStories()">
+          </div>
+          <div class="admin-table-wrap">
+            <table class="admin-table" id="admin-stories-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Tên truyện</th>
+                  <th>Tác giả</th>
+                  <th>Thể loại</th>
+                  <th>Lượt xem</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="admin-stories-body">
+                <tr><td colspan="6" class="admin-loading">⏳ Đang tải dữ liệu...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── TAB: COMMENTS ─── -->
+      <div id="admin-tab-comments" class="admin-tab">
+        <div class="admin-panel">
+          <div class="admin-panel-hd">
+            <div>
+              <div class="admin-panel-title">💬 Bình luận gần đây</div>
+              <div class="admin-panel-sub" id="admin-comments-sub">50 bình luận mới nhất</div>
+            </div>
+            <button class="btn-admin-action" onclick="loadAdminComments()">🔄 Làm mới</button>
+          </div>
+          <div class="admin-cmt-list" id="admin-comments-list">
+            <div class="admin-loading">⏳ Đang tải...</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /admin-content -->
+  </div><!-- /admin-layout -->
+</div><!-- /page-admin -->

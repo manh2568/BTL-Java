@@ -1,0 +1,97 @@
+<!-- ================================================================
+     PAGE: DETAIL (story info + chapter list)
+     ================================================================ -->
+<div id="page-detail" class="page">
+  <div class="detail-hero">
+    <div class="detail-subhead">
+      <button class="back-btn" onclick="goHome()">← Trang Chủ</button>
+    </div>
+    <div class="detail-in">
+      <!-- Cover -->
+      <div class="detail-cv">
+        <div class="detail-cv-ttl" id="d-cvttl"></div>
+        <div class="book-dco"></div>
+        <div id="d-cvgnr"></div>
+      </div>
+      <!-- Info -->
+      <div class="detail-info">
+        <div class="tags" id="d-tags"></div>
+        <div class="detail-ttl" id="d-ttl"></div>
+        <div class="detail-aut" id="d-aut"></div>
+        <div class="stars" id="d-stars"></div>
+        <div class="detail-stats" id="d-stats"></div>
+        <div class="detail-desc" id="d-desc"></div>
+        <!-- Reading progress bar -->
+        <div class="progress-wrap is-hidden" id="d-progress">
+          <div class="progress-row">
+            <span class="progress-label">Tiến độ đọc</span>
+            <span class="progress-val" id="d-prog-val">0/0 chương</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="d-prog-fill"></div>
+          </div>
+        </div>
+        <!-- Action buttons -->
+        <div class="detail-actions">
+          <button class="btn-p" id="d-btn-read" onclick="readChapter(0)">📖 Đọc Từ Đầu</button>
+          <button class="btn-s" id="btn-follow" onclick="toggleFollow()">🔔 Theo Dõi</button>
+          <button class="btn-s is-hidden" id="d-btn-edit-story" onclick="openDetailEditStory()" style="border-color:var(--gold); color:var(--gold);">⚙️ Sửa Truyện</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chapter list -->
+  <div class="chapters-sec">
+    <div class="sec-ttl">Danh Sách Chương</div>
+    <div class="ch-grid" id="ch-grid"></div>
+  </div>
+
+  <!-- Modal chỉnh sửa chương (ẩn mặc định trên trang Detail) -->
+  <div class="author-ch-modal is-hidden" id="detail-edit-chapter-modal" style="max-width: 800px; margin: 2rem auto; padding: 0 2rem;">
+    <div class="settings-card" style="background:var(--bg2); padding:2rem; border-radius:12px; border:1px solid var(--bdr);">
+      <div class="sc-title" style="font-family:'Playfair Display',serif; color:var(--gold); font-size:1.5rem; margin-bottom:1.5rem;"><span class="sc-title-ico">📝</span> Sửa Chương</div>
+      <div class="sg2" style="display:grid; grid-template-columns:100px 1fr; gap:1rem; margin-bottom:1rem;">
+        <div class="fg-s"><label class="fl-s" style="color:var(--txt3); font-size:0.8rem;">Chương số</label><input class="fi-s" id="de-ech-index" type="number" min="1" style="width:100%; padding:0.5rem; background:var(--bg); border:1px solid var(--bdr); color:var(--txt); border-radius:6px;"></div>
+        <div class="fg-s"><label class="fl-s" style="color:var(--txt3); font-size:0.8rem;">Tiêu đề chương</label><input class="fi-s" id="de-ech-title" type="text" style="width:100%; padding:0.5rem; background:var(--bg); border:1px solid var(--bdr); color:var(--txt); border-radius:6px;"></div>
+      </div>
+      <div class="fg-s" style="margin-bottom:1.5rem;"><label class="fl-s" style="color:var(--txt3); font-size:0.8rem;">Nội dung</label><textarea class="fi-s" id="de-ech-content" rows="15" style="width:100%; padding:0.8rem; background:var(--bg); border:1px solid var(--bdr); color:var(--txt); border-radius:6px; font-family:inherit; resize:vertical;"></textarea></div>
+      <div class="save-row" style="display:flex; gap:1rem; justify-content:flex-end;">
+        <button class="btn-cc" style="padding:0.6rem 1.5rem; background:transparent; border:1px solid var(--bdr); color:var(--txt); border-radius:6px; cursor:pointer;" onclick="closeDetailEditChapter()">Hủy</button>
+        <button class="btn-sv" style="padding:0.6rem 1.5rem; background:var(--gold); border:none; color:var(--bg2); border-radius:6px; cursor:pointer; font-weight:bold;" onclick="submitDetailEditChapter()">💾 Lưu Thay Đổi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal chỉnh sửa truyện (bản sao tĩnh cho trang Detail) -->
+  <div class="author-new-form is-hidden" id="detail-edit-story-modal" style="max-width: 800px; margin: 2rem auto; padding: 0 2rem;">
+    <div class="settings-card" style="background:var(--bg2); padding:2rem; border-radius:12px; border:1px solid var(--bdr);">
+      <div class="sc-title" style="font-family:'Playfair Display',serif; color:var(--gold); font-size:1.5rem; margin-bottom:1.5rem;"><span class="sc-title-ico">⚙️</span> Sửa Truyện</div>
+      <div class="sg2" style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
+        <div class="fg-s"><label class="fl-s" style="color:var(--txt3); font-size:0.8rem;">Tên truyện</label><input class="fi-s" id="de-es-title" type="text" style="width:100%; padding:0.5rem; background:var(--bg); border:1px solid var(--bdr); color:var(--txt); border-radius:6px;"></div>
+        <div class="fg-s"><label class="fl-s" style="color:var(--txt3); font-size:0.8rem;">Tác giả</label><input class="fi-s" id="de-es-author" type="text" style="width:100%; padding:0.5rem; background:var(--bg); border:1px solid var(--bdr); color:var(--txt); border-radius:6px;"></div>
+      </div>
+      <div class="sg2" style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
+        <div class="fg-s"><label class="fl-s" style="color:var(--txt3); font-size:0.8rem;">Thể loại</label><input class="fi-s" id="de-es-genre" type="text" style="width:100%; padding:0.5rem; background:var(--bg); border:1px solid var(--bdr); color:var(--txt); border-radius:6px;"></div>
+        <div class="fg-s"><label class="fl-s" style="color:var(--txt3); font-size:0.8rem;">Trạng thái</label>
+          <select class="fi-s" id="de-es-status" style="width:100%; padding:0.5rem; background:var(--bg); border:1px solid var(--bdr); color:var(--txt); border-radius:6px;">
+            <option value="Đang Ra">Đang Ra</option>
+            <option value="Hoàn Thành">Hoàn Thành</option>
+            <option value="Tạm Ngưng">Tạm Ngưng</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg-s" style="margin-bottom:1rem;">
+        <label class="fl-s" style="color:var(--txt3); font-size:0.8rem;">Ảnh bìa (URL)</label>
+        <input class="fi-s" id="de-es-cover" type="text" style="width:100%; padding:0.5rem; background:var(--bg); border:1px solid var(--bdr); color:var(--txt); border-radius:6px;">
+      </div>
+      <div class="fg-s" style="margin-bottom:1.5rem;"><label class="fl-s" style="color:var(--txt3); font-size:0.8rem;">Mô tả</label><textarea class="fi-s" id="de-es-desc" rows="6" style="width:100%; padding:0.8rem; background:var(--bg); border:1px solid var(--bdr); color:var(--txt); border-radius:6px; font-family:inherit; resize:vertical;"></textarea></div>
+      <div class="save-row" style="display:flex; gap:1rem; justify-content:flex-end;">
+        <button class="btn-cc" style="padding:0.6rem 1.5rem; background:transparent; border:1px solid var(--bdr); color:var(--txt); border-radius:6px; cursor:pointer;" onclick="closeDetailEditStory()">Hủy</button>
+        <button class="btn-sv" style="padding:0.6rem 1.5rem; background:var(--gold); border:none; color:var(--bg2); border-radius:6px; cursor:pointer; font-weight:bold;" onclick="submitDetailEditStory()">💾 Lưu Bản Sửa</button>
+      </div>
+    </div>
+  </div>
+
+  <footer><strong>TruyệnHay</strong> — © 2025</footer>
+</div>

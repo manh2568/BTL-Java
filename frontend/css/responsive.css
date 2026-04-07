@@ -1,0 +1,18 @@
+﻿/* Global responsive + scrollbars */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--sf2);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--goldd)}
+
+@media(max-width:768px){
+  .hero-in{grid-template-columns:1fr}
+  .bk-wrap{display:none}
+  .hero h1{font-size:2rem}
+  .detail-in{flex-direction:column}
+  .two-col{grid-template-columns:1fr}
+  nav{display:none}
+  .search-bar{min-width:0;flex:1}
+  .user-nm{display:none}
+}
+
+
