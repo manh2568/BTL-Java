@@ -1,6 +1,6 @@
 # TruyệnHay
 
-TruyệnHay là một đồ án web đọc truyện online, tách riêng `frontend` và `backend`.
+TruyệnHay là một web đọc truyện online.
 
 - Frontend: HTML, CSS, JavaScript thuần, hiển thị trang chủ, danh sách truyện, chi tiết truyện, trang đọc, hồ sơ cá nhân và trang quản trị.
 - Backend: Spring Boot 3, REST API, JWT Authentication, SQL Server.
