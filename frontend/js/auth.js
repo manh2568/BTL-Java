@@ -398,6 +398,26 @@ function updateHdAuth() {
       roleEl.className = 'dd-role dd-role--' + role.toLowerCase();
     }
 
+    // Cập nhật Wallet & VIP trong dropdown
+    const ddCoins = document.getElementById('dd-coins');
+    const ddVip = document.getElementById('dd-vip');
+    if (ddCoins) ddCoins.textContent = (curUser.coins || 0) + ' Coins';
+    if (ddVip) {
+      if (curUser.vipExpiresAt && new Date(curUser.vipExpiresAt) > new Date()) {
+        ddVip.textContent = '👑 VIP';
+        ddVip.style.color = 'var(--gold)';
+        document.getElementById('hd-vip-crown')?.classList.remove('is-hidden');
+        const hdAv = document.getElementById('hd-av');
+        if (hdAv) { hdAv.style.boxShadow = '0 0 8px var(--gold)'; hdAv.style.border = '2px solid var(--gold)'; }
+      } else {
+        ddVip.textContent = 'Thường';
+        ddVip.style.color = 'var(--txt)';
+        document.getElementById('hd-vip-crown')?.classList.add('is-hidden');
+        const hdAv = document.getElementById('hd-av');
+        if (hdAv) { hdAv.style.boxShadow = 'none'; hdAv.style.border = 'none'; }
+      }
+    }
+
     // Ẩn/Hiện nút Quản Trị
     const adminBtn = document.getElementById('dd-admin-btn');
     if (adminBtn) {

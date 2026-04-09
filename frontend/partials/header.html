@@ -35,7 +35,10 @@
       <button class="btn-hreg" onclick="openModal('register')">Đăng Ký</button>
     </div>
     <div class="user-menu is-hidden" id="auth-user" onclick="toggleDD()">
-      <div class="user-av" id="hd-av">A</div>
+      <div style="position: relative;">
+        <div class="user-av" id="hd-av">A</div>
+        <div id="hd-vip-crown" class="is-hidden" style="position:absolute; top:-10px; right:-6px; font-size:16px; transform:rotate(15deg); filter:drop-shadow(0 2px 2px rgba(0,0,0,0.5)); z-index:10; pointer-events:none;">👑</div>
+      </div>
       <span class="user-nm" id="hd-nm">User</span>
       <span class="c-txt3--caret">▾</span>
       <div class="user-dd" id="user-dd">
@@ -43,6 +46,19 @@
           <div class="dd-uname" id="dd-nm"></div>
           <div class="dd-email" id="dd-em"></div>
           <div class="dd-role" id="dd-role"></div>
+        </div>
+        <div class="dd-wallet" style="padding: 10px 15px; border-bottom: 1px solid var(--bdr); background: rgba(220,186,105, 0.05); cursor: pointer;" onclick="goProfileTab('wallet');closeDD();">
+           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 5px;">
+              <span style="font-size:0.85rem; color:var(--txt3)">Số dư:</span>
+              <span style="font-weight:bold; color:var(--gold)" id="dd-coins">0 Coins</span>
+           </div>
+           <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:0.85rem; color:var(--txt3)">Quyền lợi:</span>
+              <span style="font-size:0.85rem; font-weight:bold; color:var(--txt)" id="dd-vip">Thường</span>
+           </div>
+           <div style="text-align:center; margin-top:8px;">
+             <span style="font-size:0.8rem; color:var(--gold)">Nạp thêm / Mua VIP ➞</span>
+           </div>
         </div>
         <button class="dd-item" onclick="goProfile();closeDD()">👤 Trang Cá Nhân</button>
         <button class="dd-item" onclick="goProfileTab('history');closeDD()">🕐 Lịch sử đọc</button>

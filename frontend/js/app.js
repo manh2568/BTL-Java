@@ -624,7 +624,11 @@ window.openStory = async function(id, push = true) {
   const storyId = getStoryId(curStory);
 
   try {
-    const response = await fetch(`http://localhost:8080/api/chapters/${storyId}`, { cache: 'no-store' });
+    const headers = { 'cache': 'no-store' };
+    const token = localStorage.getItem('auth_token');
+    if (token) headers['Authorization'] = 'Bearer ' + token;
+
+    const response = await fetch(`http://localhost:8080/api/chapters/${storyId}`, { headers });
     if (response.ok) {
       curStory.chList = await response.json();
       curStory.chapters = curStory.chList.length;
@@ -774,11 +778,25 @@ function readChapter(idx, push = true) {
   document.getElementById('ch-title').textContent = chapter.title;
   document.getElementById('ch-story-n').textContent = `${curStory.title} · ${curStory.author || 'Đang cập nhật'}`;
 
-  const text = chapter.content || 'Nội dung chương này đang được cập nhật...';
-  document.getElementById('ch-text').innerHTML = text
-    .split('\n')
-    .map(part => part.trim() ? `<p>${part}</p>` : '')
-    .join('');
+  let textHtml = '';
+  if (chapter.isLocked) {
+    const price = chapter.price || 50;
+    textHtml = `
+      <div class="locked-chapter-banner" style="text-align: center; padding: 40px; background: rgba(0,0,0,0.05); border-radius: 8px; margin: 20px 0;">
+        <h3 style="color: var(--gold); margin-bottom: 10px;">🔒 Chương Này Đã Bị Khóa</h3>
+        <p style="margin-bottom: 20px;">Bạn cần <strong>${price} Coins</strong> hoặc <strong>Tài khoản VIP</strong> để đọc tiếp.</p>
+        <div>
+          <button onclick="unlockChapter(${chapter.id}, ${price})" style="background: var(--gold); border: none; padding: 10px 20px; color: #fff; cursor: pointer; border-radius: 4px; font-weight: bold; margin-right: 10px;"> Mở khóa (${price} Coins)</button>
+          <button onclick="window.location.hash='#profile'" style="background: transparent; border: 1px solid var(--gold); padding: 10px 20px; color: var(--gold); cursor: pointer; border-radius: 4px; font-weight: bold;">Nạp Thêm / Mua VIP</button>
+        </div>
+      </div>
+    `;
+  } else {
+    const text = chapter.content || 'Nội dung chương này đang được cập nhật...';
+    textHtml = text.split('\n').map(part => part.trim() ? `<p>${part}</p>` : '').join('');
+  }
+  
+  document.getElementById('ch-text').innerHTML = textHtml;
 
   markRead(storyId, curCh);
   trackHistory(storyId);
@@ -809,6 +827,35 @@ function readChapter(idx, push = true) {
 
 function prevCh() { if (curCh > 0) readChapter(curCh - 1); }
 function nextCh() { if (curStory && curCh < curStory.chList.length - 1) readChapter(curCh + 1); }
+
+window.unlockChapter = async function(chapterId, price) {
+  if (!curUser) { openModal('login'); return; }
+  const confirmUnlock = confirm(`Bạn có đồng ý dùng ${price} Coins để mở khóa chương này?`);
+  if (!confirmUnlock) return;
+
+  const token = localStorage.getItem('auth_token');
+  try {
+    const res = await fetch(`http://localhost:8080/api/payment/unlock-chapter/${chapterId}`, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    const msg = await res.text();
+    if (!res.ok) {
+      showToast('❌ Lỗi: ' + msg);
+      return;
+    }
+    showToast('✅ Mở khóa thành công!');
+    // Cập nhật lại số dư user locally for UI
+    curUser.coins = (curUser.coins || 0) - price;
+    localStorage.setItem('user_info', JSON.stringify(curUser));
+    // Tải lại chương
+    const storyId = getStoryId(curStory);
+    await openStory(storyId, false);
+    readChapter(curCh, false);
+  } catch (err) {
+    showToast('❌ Lỗi kết nối máy chủ!');
+  }
+};
 
 function trackHistory(storyId) {
   if (!curUser) return;
@@ -1173,6 +1220,7 @@ function openDetailEditChapter(storyId, index) {
   document.getElementById('de-ech-id').textContent = chapter.id;
   document.getElementById('de-ech-index').value = chapter.chapterIndex || (index + 1);
   document.getElementById('de-ech-title').value = chapter.title;
+  document.getElementById('de-ech-price').value = chapter.price || 0;
   document.getElementById('de-ech-content').value = chapter.content || '';
   
   document.getElementById('detail-edit-chapter-modal').classList.remove('is-hidden');
@@ -1189,6 +1237,7 @@ async function submitDetailEditChapter() {
   
   const index = parseInt(document.getElementById('de-ech-index').value);
   const title = document.getElementById('de-ech-title').value.trim();
+  const price = parseInt(document.getElementById('de-ech-price').value) || 0;
   const content = document.getElementById('de-ech-content').value.trim();
   
   if (!index || !title || !content) { showToast('Vui lòng điền đủ thông tin chương!'); return; }
@@ -1201,7 +1250,7 @@ async function submitDetailEditChapter() {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token
       },
-      body: JSON.stringify({ chapterIndex: index, title, content })
+      body: JSON.stringify({ chapterIndex: index, title, content, price })
     });
     
     if (!res.ok) {

@@ -66,6 +66,26 @@ function renderProfile() {
     el.classList.toggle('selected', el.textContent === user.avatarEmoji);
   });
 
+  const profCoins = document.getElementById('prof-coins');
+  const profVipStatus = document.getElementById('prof-vip-status');
+  if (profCoins) profCoins.textContent = (user.coins || 0) + ' Coins';
+  if (profVipStatus) {
+    if (user.vipExpiresAt && new Date(user.vipExpiresAt) > new Date()) {
+      const expirationDate = new Date(user.vipExpiresAt);
+      profVipStatus.textContent = '👑 VIP - Hết hạn: ' + expirationDate.toLocaleDateString('vi-VN');
+      profVipStatus.style.color = 'var(--gold)';
+      document.getElementById('prof-vip-crown')?.classList.remove('is-hidden');
+      const avCircle = document.getElementById('prof-av-circle');
+      if (avCircle) { avCircle.style.border = '4px solid var(--gold)'; avCircle.style.boxShadow = '0 0 20px var(--gold)'; }
+    } else {
+      profVipStatus.textContent = 'Thành viên thường';
+      profVipStatus.style.color = 'var(--txt)';
+      document.getElementById('prof-vip-crown')?.classList.add('is-hidden');
+      const avCircle = document.getElementById('prof-av-circle');
+      if (avCircle) { avCircle.style.border = 'none'; avCircle.style.boxShadow = 'none'; }
+    }
+  }
+
   const followBox = document.getElementById('follow-content');
   if (followBox) {
     if (!followStories.length) {
@@ -244,7 +264,7 @@ function continueReading(storyId, lastIdx) {
 }
 
 function showProfileTab(tab) {
-  ['follows', 'history', 'settings', 'my-stories'].forEach(name => {
+  ['follows', 'history', 'settings', 'my-stories', 'wallet'].forEach(name => {
     const snav = document.getElementById('snav-' + name);
     const panel = document.getElementById('ptc-' + name);
     if (snav) snav.classList.toggle('active', name === tab);
@@ -427,6 +447,7 @@ function openAddChapter(storyId, storyTitle) {
   document.getElementById('ach-story-name').textContent = storyTitle;
   document.getElementById('ach-index').value = '';
   document.getElementById('ach-title').value = '';
+  document.getElementById('ach-price').value = '0';
   document.getElementById('ach-content').value = '';
   document.getElementById('add-chapter-modal')?.classList.remove('is-hidden');
   
@@ -447,6 +468,7 @@ async function submitNewChapter() {
   
   const chapterIndex = parseInt(document.getElementById('ach-index')?.value);
   const title = document.getElementById('ach-title')?.value.trim();
+  const price = parseInt(document.getElementById('ach-price')?.value) || 0;
   const content = document.getElementById('ach-content')?.value.trim();
   
   if (!chapterIndex || !title) { showToast('Vui lòng nhập số thứ tự và tiêu đề chương!'); return; }
@@ -464,7 +486,8 @@ async function submitNewChapter() {
         storyId: _addChapterStoryId,
         chapterIndex: chapterIndex,
         title: title,
-        content: content
+        content: content,
+        price: price
       })
     });
     
@@ -604,6 +627,7 @@ async function submitEditChapter() {
   if (!_editChapterId) return;
   const index = parseInt(document.getElementById('ech-index')?.value);
   const title = document.getElementById('ech-title')?.value.trim();
+  const price = parseInt(document.getElementById('ech-price')?.value) || 0;
   const content = document.getElementById('ech-content')?.value.trim();
   
   if (!index || !title || !content) { showToast('Vui lòng điền đủ thông tin chương!'); return; }
@@ -616,7 +640,7 @@ async function submitEditChapter() {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token
       },
-      body: JSON.stringify({ chapterIndex: index, title, content })
+      body: JSON.stringify({ chapterIndex: index, title, content, price })
     });
     
     if (!res.ok) {
@@ -629,3 +653,36 @@ async function submitEditChapter() {
     showToast('❌ Lỗi mạng!');
   }
 }
+
+window.topUpCoins = async function(amount) {
+  if (!curUser) return;
+  const token = localStorage.getItem('auth_token');
+  try {
+    const res = await fetch(`http://localhost:8080/api/payment/topup`, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount: amount })
+    });
+    if (!res.ok) { showToast('❌ Lỗi: ' + await res.text()); return; }
+    curUser = await res.json();
+    localStorage.setItem('user_info', JSON.stringify(curUser));
+    renderProfile();
+    showToast('✅ Nạp thành công ' + amount + ' Coins!');
+  } catch (err) { showToast('❌ Lỗi kết nối máy chủ!'); }
+};
+
+window.buyVip = async function() {
+  if (!curUser) return;
+  const token = localStorage.getItem('auth_token');
+  try {
+    const res = await fetch(`http://localhost:8080/api/payment/buy-vip`, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (!res.ok) { showToast('❌ Lỗi: ' + await res.text()); return; }
+    curUser = await res.json();
+    localStorage.setItem('user_info', JSON.stringify(curUser));
+    renderProfile();
+    showToast('✅ Đăng ký VIP thành công!');
+  } catch (err) { showToast('❌ Lỗi kết nối máy chủ!'); }
+};

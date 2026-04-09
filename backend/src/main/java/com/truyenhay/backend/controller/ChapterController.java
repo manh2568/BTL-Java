@@ -28,12 +28,51 @@ public class ChapterController {
     @Autowired
     private StoryRepository storyRepository;
 
+    @Autowired
+    private com.truyenhay.backend.repository.TransactionRepository transactionRepository;
+
     @GetMapping("/{storyId}")
     public ResponseEntity<List<Chapter>> getChaptersByStory(
-            @PathVariable Long storyId) {
-        return ResponseEntity.ok(
-                chapterService.getChaptersByStory(storyId)
-        );
+            @PathVariable Long storyId, Authentication authentication) {
+        
+        List<Chapter> chapters = chapterService.getChaptersByStory(storyId);
+        
+        User user = null;
+        if (authentication != null && authentication.getName() != null) {
+            user = userRepository.findByUsername(authentication.getName()).orElse(null);
+        }
+        
+        boolean isVip = false;
+        if (user != null && user.getVipExpiresAt() != null && user.getVipExpiresAt().isAfter(java.time.LocalDateTime.now())) {
+            isVip = true;
+        }
+
+        java.util.Set<Long> boughtIds = new java.util.HashSet<>();
+        if (user != null && !isVip) {
+            List<com.truyenhay.backend.entity.Transaction> txs = transactionRepository.findByUserIdAndType(user.getId(), "UNLOCK_CHAPTER");
+            for (com.truyenhay.backend.entity.Transaction tx : txs) {
+                if (tx.getChapterId() != null) {
+                    boughtIds.add(tx.getChapterId());
+                }
+            }
+        }
+
+        for (Chapter ch : chapters) {
+            if (ch.getPrice() != null && ch.getPrice() > 0) {
+                // Tác giả/Admin được xem hết
+                boolean autoAccess = false;
+                if (user != null && (user.getRole().name().equals("ADMIN") || (user.getId().equals(storyRepository.findById(storyId).get().getUserId())))) {
+                    autoAccess = true;
+                }
+
+                if (!isVip && !autoAccess && !boughtIds.contains(ch.getId())) {
+                    ch.setContent("Nội dung chương thu phí..."); // Hoặc làm trống
+                    ch.setIsLocked(true);
+                }
+            }
+        }
+
+        return ResponseEntity.ok(chapters);
     }
     // Thêm chương mới — chỉ chủ truyện (AUTHOR) hoặc ADMIN mới được
     @PreAuthorize("hasAnyRole('AUTHOR','ADMIN')")

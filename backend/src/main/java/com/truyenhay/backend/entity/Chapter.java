@@ -28,6 +28,13 @@ public class Chapter {
 
     @Transient
     private int commentCount;
+
+    @Column(name = "price", nullable = false)
+    private Integer price = 0;
+
+    @Transient
+    private Boolean isLocked = false;
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 

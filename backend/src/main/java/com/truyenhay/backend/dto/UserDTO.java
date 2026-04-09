@@ -11,4 +11,6 @@ public class UserDTO {
     private String fullName;
     private String avatarUrl;
     private Role role;
+    private Long coins;
+    private java.time.LocalDateTime vipExpiresAt;
 }

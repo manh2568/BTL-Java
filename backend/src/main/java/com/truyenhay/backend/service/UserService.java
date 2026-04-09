@@ -28,6 +28,8 @@ public class UserService {
         dto.setFullName(user.getFullName());
         dto.setAvatarUrl(user.getAvatarUrl());
         dto.setRole(user.getRole());
+        dto.setCoins(user.getCoins());
+        dto.setVipExpiresAt(user.getVipExpiresAt());
         return dto;
     }
 

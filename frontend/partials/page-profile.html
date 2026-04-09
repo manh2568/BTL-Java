@@ -21,6 +21,7 @@
     <div class="prof-av-row">
       <!-- Clickable avatar -->
       <div class="av-wrapper" onclick="document.getElementById('av-file-input').click()" title="Đổi ảnh đại diện">
+        <div id="prof-vip-crown" class="is-hidden" style="position:absolute; top:-25px; right:-15px; font-size:40px; transform:rotate(15deg); filter:drop-shadow(0 4px 6px rgba(0,0,0,0.5)); z-index: 5; pointer-events:none;">👑</div>
         <div class="av-circle" id="prof-av-circle">
           <span id="prof-av-initial">A</span>
           <img id="prof-av-photo" class="av-photo is-hidden" src="" alt="">
@@ -91,6 +92,9 @@
       <div class="snav-divider is-hidden" id="snav-author-div"></div>
       <div class="snav-section">
         <span class="snav-label">Tài khoản</span>
+        <button class="snav-btn" id="snav-wallet" onclick="goProfileTab('wallet')">
+          <span class="si">💎</span> Ví Coin & VIP
+        </button>
         <button class="snav-btn" id="snav-settings" onclick="goProfileTab('settings')">
           <span class="si">⚙️</span> Cài Đặt
         </button>
@@ -205,6 +209,7 @@
             <div class="sg2">
               <div class="fg-s"><label class="fl-s">Số thứ tự chương *</label><input class="fi-s" id="ach-index" type="number" min="1" placeholder="1"></div>
               <div class="fg-s"><label class="fl-s">Tiêu đề chương *</label><input class="fi-s" id="ach-title" type="text" placeholder="Chương 1: Khởi đầu"></div>
+              <div class="fg-s"><label class="fl-s">Giá bán (Coin) *</label><input class="fi-s" id="ach-price" type="number" min="0" value="0"></div>
             </div>
             <div class="fg-s"><label class="fl-s">Nội dung chương *</label><textarea class="fi-s" id="ach-content" rows="12" placeholder="Nội dung chương truyện..."></textarea></div>
             <div class="save-row">
@@ -221,12 +226,39 @@
             <div class="sg2">
               <div class="fg-s"><label class="fl-s">Số thứ tự chương *</label><input class="fi-s" id="ech-index" type="number" min="1"></div>
               <div class="fg-s"><label class="fl-s">Tiêu đề chương *</label><input class="fi-s" id="ech-title" type="text" placeholder="Chương 1: Khởi đầu"></div>
+              <div class="fg-s"><label class="fl-s">Giá bán (Coin) *</label><input class="fi-s" id="ech-price" type="number" min="0"></div>
             </div>
             <div class="fg-s"><label class="fl-s">Nội dung chương *</label><textarea class="fi-s" id="ech-content" rows="12" placeholder="Nội dung chương truyện..."></textarea></div>
             <div class="save-row">
               <button class="btn-sv" onclick="submitEditChapter()">💾 Lưu Thay Đổi</button>
               <button class="btn-cc" onclick="closeEditChapter()">Hủy</button>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Wallet & VIP tab -->
+      <div class="ptab-panel" id="ptc-wallet">
+        <div class="panel-hd"><div class="panel-title">💎 Ví Coin & Quản Lý VIP</div></div>
+        
+        <div class="settings-card">
+          <div class="sc-title"><span class="sc-title-ico">💎</span> Số dư & Trạng thái</div>
+          <div class="sg2" style="background: rgba(220,186,105, 0.1); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--gold);">
+            <div>
+              <p style="margin: 0; color: var(--txt3); font-size: 1rem;">Số dư hiện tại:</p>
+              <h1 style="margin: 10px 0 0 0; color: var(--gold); font-size: 2.5rem;" id="prof-coins">0 Coins</h1>
+            </div>
+            <div>
+              <p style="margin: 0; color: var(--txt3); font-size: 1rem;">Trạng thái tài khoản:</p>
+              <h2 style="margin: 10px 0 0 0; color: var(--txt);" id="prof-vip-status">Thành viên thường</h2>
+            </div>
+          </div>
+          
+          <div class="sc-title" style="margin-top: 2rem;"><span class="sc-title-ico">💳</span> Nạp Coin & Nâng Cấp</div>
+          <p style="color: var(--txt3); margin-bottom: 20px;">Sử dụng Coin để mở khoá các chương truyện thu phí hoặc nâng cấp gói VIP để đọc không giới hạn.</p>
+          <div class="save-row" style="justify-content: flex-start; gap: 15px;">
+            <button class="btn-sv" onclick="topUpCoins(1000)" style="padding: 12px 25px; font-size: 1.1rem;">💳 Mua 1.000 Coins</button>
+            <button class="btn-s" onclick="buyVip()" style="background: transparent; color: var(--gold); border: 2px solid var(--gold); padding: 12px 25px; font-weight: bold; border-radius: 6px; font-size: 1.1rem;">👑 Gói VIP 30 Ngày (5.000 Coins)</button>
           </div>
         </div>
       </div>

@@ -53,6 +53,12 @@ public class User {
     @Column(name = "otp_sent_at")
     private LocalDateTime otpSentAt;
 
+    @Column(name = "coins", nullable = false)
+    private Long coins = 0L;
+
+    @Column(name = "vip_expires_at")
+    private LocalDateTime vipExpiresAt;
+
     @PrePersist
     @PreUpdate
     public void normalizeForStore() {
