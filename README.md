@@ -1,6 +1,6 @@
 # TruyệnHay
 
-TruyệnHay là một web đọc truyện online.
+TruyệnHay là một đồ án web đọc truyện online, tách riêng `frontend` và `backend`.
 
 - Frontend: HTML, CSS, JavaScript thuần, hiển thị trang chủ, danh sách truyện, chi tiết truyện, trang đọc, hồ sơ cá nhân và trang quản trị.
 - Backend: Spring Boot 3, REST API, JWT Authentication, SQL Server.
@@ -236,3 +236,14 @@ Backend hiện có file test khởi tạo:
 cd backend
 .\mvnw.cmd test
 ```
+
+## Hướng phát triển tiếp
+
+- Bổ sung tài liệu riêng cho database schema và dữ liệu mẫu.
+- Tách cấu hình frontend API base URL ra file config riêng.
+- Thêm Docker Compose cho SQL Server + backend + frontend.
+- Viết thêm test cho service và controller.
+
+## Ghi nhận
+
+README này được viết dựa trên cấu trúc thư mục và mã nguồn hiện có trong repository.

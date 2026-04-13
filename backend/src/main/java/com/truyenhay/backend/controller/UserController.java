@@ -162,4 +162,13 @@ public class UserController {
             return ResponseEntity.badRequest().body("Dữ liệu gửi lên không hợp lệ!");
         }
     }
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUser(Authentication authentication) {
+        if (authentication == null || authentication.getName() == null) {
+            return ResponseEntity.status(401).body("Bạn chưa đăng nhập!");
+        }
+        Optional<User> userOpt = userRepository.findByUsername(authentication.getName());
+        return userOpt.<ResponseEntity<?>>map(user -> ResponseEntity.ok(userService.toPublicDTO(user)))
+                .orElseGet(() -> ResponseEntity.badRequest().body("Không tìm thấy người dùng!"));
+    }
 }

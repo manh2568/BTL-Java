@@ -19,9 +19,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
+    private final com.truyenhay.backend.security.OAuth2SuccessHandler oauth2SuccessHandler;
 
-    public SecurityConfig(JwtAuthFilter jwtAuthFilter) {
+    public SecurityConfig(JwtAuthFilter jwtAuthFilter, com.truyenhay.backend.security.OAuth2SuccessHandler oauth2SuccessHandler) {
         this.jwtAuthFilter = jwtAuthFilter;
+        this.oauth2SuccessHandler = oauth2SuccessHandler;
     }
 
     @Bean
@@ -32,8 +34,10 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // Public: đăng ký / đăng nhập
-                        .requestMatchers("/api/auth/register/**", "/api/auth/login").permitAll()
+                        .requestMatchers("/api/auth/register/**", "/api/auth/login", "/login/oauth2/**", "/oauth2/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        // Public: Chatbot AI (cho phép cả khách không đăng nhập)
+                        .requestMatchers(HttpMethod.POST, "/api/chat").permitAll()
                         // Public: đọc truyện / chương / comment
                         .requestMatchers(HttpMethod.GET, "/api/stories/**", "/api/chapters/**", "/api/comments/**").permitAll()
                         // Public: tăng lượt xem
@@ -41,12 +45,17 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/comments/stream/**").permitAll()
                         // Public: lấy rating (POST rating cần đăng nhập — xử lý trong controller)
                         .requestMatchers(HttpMethod.GET, "/api/ratings/**").permitAll()
+                        // Public: VNPay callback (Redirect từ cổng thanh toán)
+                        .requestMatchers("/api/payment/vnpay-callback").permitAll()
                         // Public: serve ảnh bìa upload
                         .requestMatchers(HttpMethod.GET, "/api/upload/covers/**").permitAll()
                         // Admin only: toàn bộ /api/admin/**
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         // Còn lại phải đăng nhập
                         .anyRequest().authenticated()
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .successHandler(oauth2SuccessHandler)
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

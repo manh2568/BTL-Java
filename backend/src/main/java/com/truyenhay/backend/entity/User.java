@@ -26,10 +26,15 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @NotBlank(message = "Password không được trống")
-    @Size(min = 8, message = "Password tối thiểu 8 ký tự")
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, columnDefinition = "NVARCHAR(20) DEFAULT 'LOCAL'")
+    private AuthProvider provider = AuthProvider.LOCAL;
+
+    @Column(name = "provider_id")
+    private String providerId;
 
     @Column(name = "full_name")
     private String fullName;

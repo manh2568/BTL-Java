@@ -138,6 +138,7 @@ public class ChapterController {
         if (updated.getTitle() != null) existing.setTitle(updated.getTitle());
         if (updated.getContent() != null) existing.setContent(updated.getContent());
         if (updated.getChapterIndex() != null) existing.setChapterIndex(updated.getChapterIndex());
+        if (updated.getPrice() != null && updated.getPrice() >= 0) existing.setPrice(updated.getPrice());
 
         Chapter saved = chapterService.saveChapter(existing);
         return ResponseEntity.ok(saved);

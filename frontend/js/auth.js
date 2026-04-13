@@ -16,8 +16,11 @@ function openModal(tab) {
 function closeModal() {
   document.getElementById('auth-modal').classList.remove('open');
   document.body.style.overflow = '';
-  clearErrors();
-  hideAlert();
+  setTimeout(() => {
+    document.getElementById('auth-success-tick').style.display = 'none';
+    clearErrors();
+    hideAlert();
+  }, 300);
 }
 
 function ovClick(e) {
@@ -106,6 +109,14 @@ function showAlert(msg, type) {
   const box = document.getElementById('alert-bx');
   box.textContent = msg;
   box.className = 'alert-bx show ' + type;
+  if (type === 'fail') triggerShake();
+}
+
+function triggerShake() {
+  const modal = document.getElementById('auth-modal-box');
+  modal.classList.remove('shake');
+  void modal.offsetWidth; // trigger reflow
+  modal.classList.add('shake');
 }
 
 function hideAlert() {
@@ -334,12 +345,24 @@ async function loginOK(user) {
   // Xóa sạch readData cũ trước khi sync từ server (tránh lẫn user)
   curUser.readData = {};
   curUser.history = [];
-  curUser.followed = []; // Reset followed, sẽ load từ DB
+  curUser.followed = [];
   localStorage.setItem('user_info', JSON.stringify(curUser));
-  closeModal();
-  updateHdAuth();
-  applyRoleUI(); // Áp dụng ẩn/hiện UI theo role
-  showToast('Chào mừng, ' + curUser.firstname + '!');
+  
+  // Show success tick
+  const tick = document.getElementById('auth-success-tick');
+  if (tick) {
+    tick.style.display = 'flex';
+    setTimeout(() => {
+      closeModal();
+      updateHdAuth();
+      applyRoleUI();
+      showToast('Chào mừng, ' + curUser.firstname + '!');
+    }, 1200);
+  } else {
+    closeModal();
+    updateHdAuth();
+    applyRoleUI();
+  }
 
   // Đồng bộ tiến độ đọc và danh sách theo dõi từ Database
   if (typeof syncReadingProgress === 'function') {
@@ -458,14 +481,44 @@ document.addEventListener('keydown', function(event) {
       const frmForgot = document.getElementById('frm-forgot');
       
       if (frmLogin && frmLogin.style.display !== 'none' && !frmLogin.classList.contains('is-hidden')) {
-        login();
+        doLogin();
       } else if (frmRegister && frmRegister.style.display !== 'none' && !frmRegister.classList.contains('is-hidden')) {
-        register();
+        doRegister();
       } else if (frmVerify && !frmVerify.classList.contains('is-hidden')) {
-        verifyOtp();
+        doVerifyOTP();
       } else if (frmForgot && !frmForgot.classList.contains('is-hidden')) {
-        resetPassword();
+        doForgot(); // Fixed: was resetPassword()
       }
     }
   }
 });
+
+/**
+ * Xử lý Token từ OAuth2 (Google/Facebook)
+ */
+async function checkOAuthToken() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const token = urlParams.get('token');
+  if (token) {
+    localStorage.setItem('auth_token', token);
+    try {
+      const res = await fetch('http://localhost:8080/api/auth/me', {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      if (res.ok) {
+        const user = await res.json();
+        await loginOK(user);
+        // Xóa token khỏi URL để URL sạch đẹp
+        window.history.replaceState({}, document.title, window.location.pathname);
+      } else {
+        localStorage.removeItem('auth_token');
+      }
+    } catch (e) {
+      console.error('Lỗi khi xác thực OAuth Token:', e);
+      localStorage.removeItem('auth_token');
+    }
+  }
+}
+
+// Chạy ngay khi load file
+checkOAuthToken();

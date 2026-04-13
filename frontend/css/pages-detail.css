@@ -53,4 +53,9 @@
 .ch-item.ch-cur .ch-ttl{color:var(--gold)!important}
 .ch-item.ch-cur .ch-num{color:var(--gold)!important}
 
+.ch-badge.lock{color:#e24b4a;background:rgba(226,75,74,0.12)}
+.ch-item.ch-locked{opacity:0.8;border-style:dashed}
+.ch-item.ch-locked .ch-ttl{color:var(--txt3)}
+.ch-item.ch-locked:hover{border-color:var(--gold);opacity:1}
+
 

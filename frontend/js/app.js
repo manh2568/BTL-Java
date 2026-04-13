@@ -148,6 +148,10 @@ function goProfile(push = true) {
   if (push) history.pushState({ page: 'profile' }, '', '#profile');
 }
 function goProfileTab(t) { renderProfile(); showProfileTab(t); showPage('profile'); }
+function goPaymentResult(push = true) {
+  showPage('payment-result');
+  if (push) history.pushState({ page: 'payment-result' }, '', '#payment-result');
+}
 function openFeaturedStory() {
   const featured = heroStories[heroIndex] || findStoryById(4) || STORIES[0];
   if (featured) openStory(getStoryId(featured));
@@ -719,6 +723,8 @@ function renderChapterList() {
   container.innerHTML = curStory.chList.map((chapter, index) => {
     const isRead = rd.set.has(index);
     const isCurrent = rd.last === index && isRead;
+    const isLocked = chapter.isLocked || false;
+    const price = chapter.price || 0;
     
     // Ưu tiên lấy từ cache frontend nếu người dùng vừa mới comment xong, nếu không lấy số thật từ Backend
     let commentCount = chapter.commentCount || 0;
@@ -739,6 +745,11 @@ function renderChapterList() {
       badge = '<span class="ch-badge done">✓ Đã đọc</span>';
     }
 
+    if (isLocked) {
+      cls += ' ch-locked';
+      badge = `<span class="ch-badge lock">🔒 ${price} 🪙</span>`;
+    }
+
     let editBtn = '';
     if (curUser && isAuthorOrAdmin() && curUser.id === curStory.userId) {
       editBtn = `<button class="ch-cmt-btn" style="color:var(--gold); margin-right:5px;" onclick="event.stopPropagation();openDetailEditChapter(${storyId}, ${index})">⚙️ Sửa</button>`;
@@ -748,6 +759,7 @@ function renderChapterList() {
       <div class="ch-item-wrap">
         <div class="${cls}" onclick="readChapter(${index})">
           <span class="ch-ttl">${chapter.title || 'Không có tiêu đề'}</span>
+          <div style="flex: 1;"></div>
           ${editBtn}
           <button class="ch-cmt-btn ${commentClass}" onclick="toggleChPreview(event, ${storyId}, ${index})">💬 ${commentCount}</button>
           ${badge}
@@ -782,12 +794,12 @@ function readChapter(idx, push = true) {
   if (chapter.isLocked) {
     const price = chapter.price || 50;
     textHtml = `
-      <div class="locked-chapter-banner" style="text-align: center; padding: 40px; background: rgba(0,0,0,0.05); border-radius: 8px; margin: 20px 0;">
-        <h3 style="color: var(--gold); margin-bottom: 10px;">🔒 Chương Này Đã Bị Khóa</h3>
-        <p style="margin-bottom: 20px;">Bạn cần <strong>${price} Coins</strong> hoặc <strong>Tài khoản VIP</strong> để đọc tiếp.</p>
-        <div>
-          <button onclick="unlockChapter(${chapter.id}, ${price})" style="background: var(--gold); border: none; padding: 10px 20px; color: #fff; cursor: pointer; border-radius: 4px; font-weight: bold; margin-right: 10px;"> Mở khóa (${price} Coins)</button>
-          <button onclick="window.location.hash='#profile'" style="background: transparent; border: 1px solid var(--gold); padding: 10px 20px; color: var(--gold); cursor: pointer; border-radius: 4px; font-weight: bold;">Nạp Thêm / Mua VIP</button>
+      <div class="locked-chapter-banner">
+        <h3>🔒 Chương Này Đã Bị Khóa</h3>
+        <p>Bạn cần <strong>${price} Coins</strong> hoặc <strong>Tài khoản VIP</strong> để đọc tiếp.</p>
+        <div class="locked-ch-btns">
+          <button class="btn-unlock" onclick="unlockChapter(${chapter.id}, ${price})">⚡ Mở khóa (${price} Coins)</button>
+          <button class="btn-recharge" onclick="window.location.hash='#profile'">💳 Nạp Thêm / Mua VIP</button>
         </div>
       </div>
     `;
@@ -1343,17 +1355,57 @@ async function submitDetailEditStory() {
 window.addEventListener('partials:loaded', boot, { once: true });
 document.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('page-home')) boot();
+  checkVnpayResponse();
 });
 
-// ==========================================
-// SCROLL TO TOP BTN LOGIC
-// ==========================================
-window.addEventListener('scroll', () => {
-  const btn = document.getElementById('scrollToTopBtn');
-  if (!btn) return;
-  if (window.scrollY > 300) {
-    btn.classList.add('show');
-  } else {
-    btn.classList.remove('show');
+/**
+ * Kiểm tra kết quả trả về từ VNPay
+ */
+async function checkVnpayResponse() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const responseCode = urlParams.get('vnp_ResponseCode');
+  
+  if (responseCode) {
+    if (responseCode === '00') {
+      showToast('✅ Nạp tiền thành công! Đang cập nhật số dư...');
+      // Cập nhật lại thông tin user từ server
+      if (curUser) {
+        const token = localStorage.getItem('auth_token');
+        try {
+          const res = await fetch('http://localhost:8080/api/auth/me', {
+            headers: { 'Authorization': 'Bearer ' + token }
+          });
+          if (res.ok) {
+            const newUser = await res.json();
+            curUser = normalizeUserState(newUser);
+            localStorage.setItem('user_info', JSON.stringify(curUser));
+            if (typeof updateHdAuth === 'function') updateHdAuth();
+            
+            // Tự động chuyển về tab Ví để người dùng thấy tiền
+            if (typeof goProfileTab === 'function') {
+              goProfileTab('wallet');
+            }
+          }
+        } catch (e) {
+          console.error('Không thể cập nhật số dư sau nạp tiền', e);
+        }
+      } else {
+        // Trường hợp bị mất phiên (do domain mismatch hoặc logout)
+        showToast('✅ Nạp tiền thành công! Vui lòng đăng nhập lại (nếu cần) để xem số dư mới.');
+      }
+      // Dọn dẹp URL để tránh hiện lại thông báo khi F5
+      window.history.replaceState({}, document.title, window.location.pathname);
+    } else if (responseCode) {
+      showToast('❌ Thanh toán không thành công hoặc đã bị hủy.');
+      window.history.replaceState({}, document.title, window.location.pathname);
+    } else {
+      showToast('❌ Nạp tiền thất bại hoặc đã bị hủy. (Mã: ' + responseCode + ')');
+    }
+    
+    // Xóa tham số trên URL để tránh hiện lại thông báo khi reload
+    const newUrl = window.location.pathname + window.location.hash;
+    window.history.replaceState({}, document.title, newUrl);
   }
-});
+}
+
+

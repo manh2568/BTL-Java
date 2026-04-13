@@ -2,7 +2,15 @@
      AUTH MODAL
      ================================================================ -->
 <div class="modal-ov" id="auth-modal" onclick="ovClick(event)">
-  <div class="modal">
+  <div class="modal" id="auth-modal-box">
+    <!-- Success Overlay -->
+    <div id="auth-success-tick">
+      <div class="tick-circle">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+      </div>
+      <div class="modal-sub" style="margin-bottom:0; font-weight:700; color:var(--green)">Thành công!</div>
+    </div>
+
     <button class="modal-x" onclick="closeModal()">✕</button>
     <div class="modal-logo">Truyện<span>Hay</span></div>
     <div class="modal-sub" id="modal-sub">Chào mừng trở lại!</div>
@@ -35,8 +43,8 @@
       <button class="btn-p btn-full" onclick="doLogin()">Đăng Nhập</button>
       <div class="div-or">hoặc</div>
       <div class="social-btns">
-        <button class="social-btn" onclick="socialMsg('Google')">🌐 Google</button>
-        <button class="social-btn" onclick="socialMsg('Facebook')">📘 Facebook</button>
+        <button class="social-btn" onclick="window.location.href='http://localhost:8080/oauth2/authorization/google'">🌐 Google</button>
+        <button class="social-btn" onclick="window.location.href='http://localhost:8080/oauth2/authorization/facebook'">📘 Facebook</button>
       </div>
       <div class="sw-mode">Chưa có tài khoản? <button onclick="switchTab('register')">Đăng ký ngay</button></div>
     </div>
@@ -78,8 +86,8 @@
       <button class="btn-p btn-full" onclick="doRegister()">Đăng ký</button>
       <div class="div-or">hoặc</div>
       <div class="social-btns">
-        <button class="social-btn" onclick="socialMsg('Google')">🌐 Google</button>
-        <button class="social-btn" onclick="socialMsg('Facebook')">📘 Facebook</button>
+        <button class="social-btn" onclick="window.location.href='http://localhost:8080/oauth2/authorization/google'">🌐 Google</button>
+        <button class="social-btn" onclick="window.location.href='http://localhost:8080/oauth2/authorization/facebook'">📘 Facebook</button>
       </div>
       <div class="sw-mode">Đã có tài khoản? <button onclick="switchTab('login')">Đăng nhập</button></div>
     </div>
